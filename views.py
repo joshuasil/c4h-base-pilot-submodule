@@ -11,6 +11,8 @@ timezone.localtime(timezone.now())
 import json
 import csv
 import traceback
+import hashlib
+from .aws_kms_functions import *
 logger = logging.getLogger(__name__)
 
 # Create your views here.
@@ -32,11 +34,17 @@ def inbound_message(request):
             from_number = data.get('msisdn')  # Sender's phone number
             to_number = data.get('to')         # Receiver's Plivo number
             received_text = data.get('text')
-            
-            
+            from_number_hash = hashlib.sha256(from_number.encode()).hexdigest()
+            from django.db import IntegrityError
 
-            default_arm = Arm.objects.get(name__iexact="others")  # Replace 1 with the ID of the default arm
-            phone_number, _ = PhoneNumber.objects.get_or_create(phone_number=from_number, defaults={'arm': default_arm})
+            try:
+                phone_number = PhoneNumber.objects.get(phone_number_hash=from_number_hash)
+            except PhoneNumber.DoesNotExist:
+                default_arm, created = Arm.objects.get_or_create(name="others")
+                phone_number_instance = PhoneNumber(phone_number=from_number, arm=default_arm)
+                phone_number_instance.save()
+                phone_number = PhoneNumber.objects.get(phone_number_hash=from_number_hash)
+            print("created phone number")
             logger.info(f"Message received: {phone_number.id}, {to_number}, {received_text}")
             TextMessage.objects.create(phone_number=phone_number, message=received_text, route="incoming")
             if received_text.strip().lower() in ["heart", "corazón", "yes"] and not phone_number.opted_in:

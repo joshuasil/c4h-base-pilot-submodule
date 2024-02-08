@@ -28,7 +28,6 @@ class Arm(models.Model):
 
 
 class PhoneNumber(models.Model):
-    # Define a regular expression pattern for an 11-digit number
     phone_number_validator = RegexValidator(
         regex=r'^\d{11}$',  # Matches exactly 11 digits
         message="Phone number must be exactly 11 digits long.",
@@ -36,12 +35,10 @@ class PhoneNumber(models.Model):
     )
     arm = models.ForeignKey(Arm, on_delete=models.SET_DEFAULT, default=1,
                             help_text="Select the arm to which this number belongs. If the arm you wish to select doesn't exist, please create it first.")
-    phone_number = models.TextField(unique=True, blank=False,
-                                    # validators=[phone_number_validator],
-                                    help_text="Enter the 11 digit phone number in the format 1234567890 (no spaces or dashes).")
+    phone_number = models.TextField(unique=True, blank=False,help_text="Enter the 11 digit phone number in the format 1234567890 (no spaces or dashes).")
     phone_number_key = models.BinaryField()
     phone_number_hash = models.CharField(max_length=64, unique=True, blank=True, null=True)
-    name = models.TextField(blank=True, null=True,
+    name = models.TextField(blank=False, null=False,default="Anonymous",
                             help_text="Enter a first name for this number.")
     name_key = models.BinaryField()
     active = models.BooleanField(default=True)
@@ -65,28 +62,19 @@ class PhoneNumber(models.Model):
             # Validate if the phone number is a mobile number using Vonage Number Insight API
             try:
                 insight_json = client.number_insight.get_standard_number_insight(number=self.phone_number)
-
                 if insight_json['current_carrier']['network_type'] == 'mobile':
-                    # The API call was successful, and the number is a mobile number
                     pass
                 else:
-                    # The API call was not successful, or the number is not a mobile number
                     raise ValidationError("Invalid phone number. It must be a mobile number.")
             except Exception as e:
                 raise ValidationError("Error validating phone number.Please check if this is a mobile number.")
     
     def validate_unique(self, exclude=None):
         super().validate_unique(exclude)
-
-        # Generate the hash for the current phone number
         current_phone_number_hash = hashlib.sha256(self.phone_number.encode()).hexdigest()
-
-        # Query for any other instances with the same phone number hash
         existing = self.__class__.objects.filter(phone_number_hash=current_phone_number_hash)
-
-        if self.pk:  # Exclude the current instance if it's an update
-            existing = existing.exclude(pk=self.pk)
-
+        # if self.pk:
+        #     existing = existing.exclude(pk=self.pk)
         if existing.exists():
             raise ValidationError({
                 'phone_number': ValidationError(
