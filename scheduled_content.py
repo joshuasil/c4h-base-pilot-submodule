@@ -283,7 +283,10 @@ def send_goal_feedback():
         except Exception as e:
             logger.error(f"Error sending goal feedback message to {phone_number.id}: {e}")
 
-final_message = "Denver Health thanks you for being a part of Chat 4 Heart Health! Feel free to keep chatting with us about healthy habits. Please take a few minutes now to complete this quick follow-up survey about your health."
+final_message_control = settings.FINAL_MESSAGE_CONTROL
+final_message_control_es = settings.FINAL_MESSAGE_CONTROL_ES
+final_message = settings.FINAL_MESSAGE
+final_message_es = settings.FINAL_MESSAGE_ES
 def send_final_pilot_message():
     phone_numbers = PhoneNumber.objects.filter(Q(arm__name__icontains="ai_chat") | Q(arm__name__icontains="control"))
     logger.info(f'Found {phone_numbers.count()} phone numbers')
@@ -299,6 +302,14 @@ def send_final_pilot_message():
             if phone_number.final_pilot_message_sent:
                 logger.warning(f'Skipping {phone_number.id} because final message already sent')
                 continue
+            if phone_number.language == "es" and phone_number.arm.name == "control":
+                message = final_message_control_es
+            elif phone_number.language == "es" and phone_number.arm.name != "control":
+                message = final_message_es
+            elif phone_number.arm.name != "control":
+                message = final_message
+            else:
+                message = final_message_control
             retry_send_message_vonage(final_message,phone_number, route='outgoing_final_message')
             TextMessage.objects.create(phone_number=phone_number, message=final_message, route='outgoing_final_message')
             time.sleep(10)
