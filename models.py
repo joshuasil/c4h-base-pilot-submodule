@@ -17,6 +17,8 @@ from .aws_kms_functions import *
 
 welcome_message = settings.WELCOME_MESSAGE
 welcome_message_es = settings.WELCOME_MESSAGE_ES
+welcome_message_control = settings.WELCOME_MESSAGE_CONTROL
+welcome_message_control_es = settings.WELCOME_MESSAGE_CONTROL_ES
 class Arm(models.Model):
     name = models.CharField(max_length=100, unique=True, blank=False)
     description = models.TextField(blank=True, null=True)
@@ -98,10 +100,14 @@ class PhoneNumber(models.Model):
         if self.pk is not None:
             orig = PhoneNumber.objects.get(pk=self.pk)
             if self.opted_in and not self.welcome_sent:
-                if self.language == "es":
+                if self.language == "es" and self.arm.name == "control":
+                    message = welcome_message_control_es
+                elif self.language == "es" and self.arm.name != "control":
                     message = welcome_message_es
-                else:
+                elif self.arm.name != "control":
                     message = welcome_message
+                else:
+                    message = welcome_message_control
                 success = retry_send_message_vonage(message, self, "sending welcome message", max_retries=3, retry_delay=5)
                 TextMessage.objects.create(phone_number=self, message=message, route="sending welcome message")
                 time.sleep(5)
