@@ -303,13 +303,13 @@ def send_final_pilot_message():
                 logger.warning(f'Skipping {phone_number.id} because final message already sent')
                 continue
             if phone_number.language == "es" and phone_number.arm.name == "control":
-                message = final_message_control_es
+                final_message = final_message_control_es
             elif phone_number.language == "es" and phone_number.arm.name != "control":
-                message = final_message_es
+                final_message = final_message_es
             elif phone_number.arm.name != "control":
-                message = final_message
+                final_message = final_message
             else:
-                message = final_message_control
+                final_message = final_message_control
             retry_send_message_vonage(final_message,phone_number, route='outgoing_final_message')
             TextMessage.objects.create(phone_number=phone_number, message=final_message, route='outgoing_final_message')
             time.sleep(10)
