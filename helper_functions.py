@@ -30,7 +30,7 @@ with open('base/intent_dict.json', 'rb') as file:
     intent_dict = json.load(file)
 
 with codecs.open('base/intent_dict_es.json', 'rb') as file:
-    intent_dict_es = json.load(file, encoding='latin1')
+    intent_dict_es = json.load(file)
 
 with open('base/azure_intent.json', 'rb') as file:
     azure_intent = json.load(file)
