@@ -35,6 +35,7 @@ def send_message_vonage(message, phone_number, route,include_name):
     
     if phone_number.active:
         for message_text in splitter(message):
+            logger.info(f"Sending message: {message_text}")
             # Send the message using Vonage SMS
             to_phone_number = decrypt_data(phone_number.phone_number, phone_number.phone_number_key)
             # print("from: ", settings.VONAGE_NUMBER, "to: ", str(to_phone_number))
