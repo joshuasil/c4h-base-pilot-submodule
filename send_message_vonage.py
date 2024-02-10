@@ -24,9 +24,12 @@ def splitter(message):
         logger.info(f"Split messages: {split_messages}")
         return split_messages
 
-def send_message_vonage(message, phone_number, route):
+def send_message_vonage(message, phone_number, route,include_name):
     # Add logging for sending messages via Vonage
     logger.info(f"Sending message: {message} to phone number: {phone_number.pk}, route: {route}")
+    name = decrypt_data(phone_number.name, phone_number.name_key)
+    if message and include_name:
+        message = f"Hi {name}, {message}"
     
     if phone_number.active:
         for message_text in splitter(message):
@@ -38,19 +41,16 @@ def send_message_vonage(message, phone_number, route):
             if response_data["messages"][0]["status"] == "0":
                 logger.info("Message sent successfully.")
                 logger.info(f"Message details: {response_data}")
-                
-                # Log the sent message in the database
-                # TextMessage.objects.create(phone_number=phone_number, message=message_text, route=route)
             else:
                 error_message = response_data['messages'][0]['error-text']
                 logger.error(f"Message failed with error: {error_message}")
     else:
         logger.info("Phone number is not active. Message not sent.")
 
-def retry_send_message_vonage(message, phone_number, route, max_retries=3, retry_delay=5):
+def retry_send_message_vonage(message, phone_number, route, max_retries=3, retry_delay=5,include_name=True):
     for attempt in range(max_retries):
         try:
-            send_message_vonage(message, phone_number, route)
+            send_message_vonage(message, phone_number, route, include_name)
             return True  # Message sent successfully
         except requests.exceptions.ConnectionError as e:
             print(f"Attempt {attempt + 1} failed: {e}")

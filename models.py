@@ -87,12 +87,11 @@ class PhoneNumber(models.Model):
         
     @transaction.atomic
     def save(self, *args, **kwargs):
-
-        if self.phone_number:
+        if self.phone_number and len(self.phone_number) == 11:
             self.phone_number_hash = hashlib.sha256(self.phone_number.encode()).hexdigest()
             self.phone_number, self.phone_number_key = encrypt_data(self.phone_number)
-        if self.name:
-            self.name, self.name_key = encrypt_data(self.name)
+            if self.name:
+                self.name, self.name_key = encrypt_data(self.name)
         super().save(*args, **kwargs)
 
 
@@ -113,7 +112,7 @@ class PhoneNumber(models.Model):
                 time.sleep(5)
                 if self.pre_survey:
                     message = self.pre_survey
-                    success = retry_send_message_vonage(message, self, "sending pre survey link", max_retries=3, retry_delay=5)
+                    success = retry_send_message_vonage(message, self, "sending pre survey link", max_retries=3, retry_delay=5,include_name=False)
                     TextMessage.objects.create(phone_number=self, message=message, route="sending pre survey link")
                 if success:
                     self.welcome_sent = True

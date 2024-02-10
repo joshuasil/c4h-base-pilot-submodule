@@ -115,12 +115,12 @@ def send_topic_selection_message():
                 picklist = {str(topic_info['id']): topic_info['name_es'] for topic_info in topic_info_not_in_weekly_topic}
                 default_topic_id = min(picklist.keys())
                 default_topic_name = picklist[default_topic_id]
-                pre_message = f'Hola, Chat del Corazón le enviará mensajes en los próximos días sobre una {default_topic_name}. Si prefiere un tema diferente, escriba el número del tema que prefiere de esta lista:\n'
+                pre_message = f'Chat del Corazón le enviará mensajes en los próximos días sobre una {default_topic_name}. Si prefiere un tema diferente, escriba el número del tema que prefiere de esta lista:\n'
                 if topic_info_not_in_weekly_topic.count()<=1:
-                    pre_message = f'Hola, Chat del Corazón le enviará mensajes en los próximos días sobre una {default_topic_name}.\n'
+                    pre_message = f'Chat del Corazón le enviará mensajes en los próximos días sobre una {default_topic_name}.\n'
                     message = ""
                 else:
-                    pre_message = f'Hola, Chat del Corazón le enviará mensajes en los próximos días sobre una {default_topic_name}. Si prefiere un tema diferente, escriba el número del tema que prefiere de esta lista:\n'
+                    pre_message = f'Chat del Corazón le enviará mensajes en los próximos días sobre una {default_topic_name}. Si prefiere un tema diferente, escriba el número del tema que prefiere de esta lista:\n'
                     message = '\n'.join([f"{topic_id}. {topic_name}" for topic_id, topic_name in picklist.items() if topic_id != min(picklist.keys())])
                 message = pre_message + message
             else:
@@ -130,10 +130,10 @@ def send_topic_selection_message():
                 default_topic_name = picklist[default_topic_id]
                 
                 if topic_info_not_in_weekly_topic.count()<=1:
-                    pre_message = f'Hi, Chat 4 Heart Health is sending you messages over the next few days about {default_topic_name}.\n'
+                    pre_message = f'Chat 4 Heart Health is sending you messages over the next few days about {default_topic_name}.\n'
                     message = ""
                 else:
-                    pre_message = f'Hi, Chat 4 Heart Health is sending you messages over the next few days about {default_topic_name}. If you prefer a different topic, write the number of the topic you prefer from this list:\n'
+                    pre_message = f'Chat 4 Heart Health is sending you messages over the next few days about {default_topic_name}. If you prefer a different topic, write the number of the topic you prefer from this list:\n'
                     message = '\n'.join([f"{topic_id}. {topic_name}" for topic_id, topic_name in picklist.items() if topic_id != min(picklist.keys())])
                 message = pre_message + message
             picklist_json = json.dumps(picklist)
@@ -303,19 +303,19 @@ def send_final_pilot_message():
                 logger.warning(f'Skipping {phone_number.id} because final message already sent')
                 continue
             if phone_number.language == "es" and phone_number.arm.name == "control":
-                final_message = final_message_control_es
+                final_message = settings.FINAL_MESSAGE_CONTROL_ES
             elif phone_number.language == "es" and phone_number.arm.name != "control":
-                final_message = final_message_es
+                final_message = settings.FINAL_MESSAGE_ES
             elif phone_number.arm.name != "control":
-                final_message = final_message
+                final_message = settings.FINAL_MESSAGE
             else:
-                final_message = final_message_control
+                final_message = settings.FINAL_MESSAGE_CONTROL
             retry_send_message_vonage(final_message,phone_number, route='outgoing_final_message')
             TextMessage.objects.create(phone_number=phone_number, message=final_message, route='outgoing_final_message')
             time.sleep(10)
             try:
                 post_survey_link = phone_number.post_survey
-                retry_send_message_vonage(post_survey_link,phone_number, route='outgoing_post_survey_link')
+                retry_send_message_vonage(post_survey_link,phone_number, route='outgoing_post_survey_link',include_name=False)
                 TextMessage.objects.create(phone_number=phone_number, message=post_survey_link, route='outgoing_post_survey_link')
             except:
                 pass
