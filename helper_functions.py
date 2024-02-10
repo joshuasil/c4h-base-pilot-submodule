@@ -486,7 +486,7 @@ def get_prediction_render(text, language, phone_number):
 
     # Get the corresponding probabilities
     if language == 'en':
-        top_dialogs = [intent_dict[intent] for intent in top_intents]
+        top_dialogs = [intent_dict[intent] for intent in top_intents][:3]
         response_text = 'Are you asking about: \n' + ('\n'.join([f'{i + 1}. {intent}' for i, intent in enumerate(top_dialogs)]))
     else:
         top_dialogs = [intent_dict_es[intent] for intent in top_intents]
@@ -541,7 +541,7 @@ def get_prediction_azure(text, language, phone_number):
 
     # Get the corresponding probabilities
     if language == 'en':
-        top_dialogs = [intent_dict[intent] for intent in top_intents]
+        top_dialogs = [intent_dict[intent] for intent in top_intents][:3]
         response_text = 'Are you asking about: \n' + ('\n'.join([f'{i + 1}. {intent}' for i, intent in enumerate(top_dialogs)]))
     else:
         top_dialogs = [intent_dict_es[intent] for intent in top_intents]

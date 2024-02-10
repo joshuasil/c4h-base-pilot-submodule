@@ -30,6 +30,8 @@ def send_message_vonage(message, phone_number, route,include_name):
     name = decrypt_data(phone_number.name, phone_number.name_key)
     if message and include_name:
         message = f"Hi {name}, {message}"
+
+    logger.info(f"Message: {message}")
     
     if phone_number.active:
         for message_text in splitter(message):
@@ -37,7 +39,7 @@ def send_message_vonage(message, phone_number, route,include_name):
             to_phone_number = decrypt_data(phone_number.phone_number, phone_number.phone_number_key)
             # print("from: ", settings.VONAGE_NUMBER, "to: ", str(to_phone_number))
             response_data = sms.send_message({"from": settings.VONAGE_NUMBER, "to": str(to_phone_number), "text": message_text, "type": "unicode"})
-            # logger.info(f"Message sent sucessfully")
+            logger.info(f"Message response: {response_data}")
             if response_data["messages"][0]["status"] == "0":
                 logger.info("Message sent successfully.")
                 logger.info(f"Message details: {response_data}")
