@@ -304,13 +304,17 @@ def send_final_pilot_message():
                 continue
             if phone_number.language == "es" and phone_number.arm.name == "control":
                 final_message = settings.FINAL_MESSAGE_CONTROL_ES
+                retry_send_message_vonage(final_message,phone_number, route='outgoing_final_message',include_name=False)
             elif phone_number.language == "es" and phone_number.arm.name != "control":
                 final_message = settings.FINAL_MESSAGE_ES
+                retry_send_message_vonage(final_message,phone_number, route='outgoing_final_message')
             elif phone_number.arm.name != "control":
                 final_message = settings.FINAL_MESSAGE
+                retry_send_message_vonage(final_message,phone_number, route='outgoing_final_message')
             else:
                 final_message = settings.FINAL_MESSAGE_CONTROL
-            retry_send_message_vonage(final_message,phone_number, route='outgoing_final_message')
+                retry_send_message_vonage(final_message,phone_number, route='outgoing_final_message',include_name=False)
+            
             TextMessage.objects.create(phone_number=phone_number, message=final_message, route='outgoing_final_message')
             time.sleep(10)
             try:

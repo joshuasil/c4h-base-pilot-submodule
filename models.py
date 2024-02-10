@@ -101,13 +101,17 @@ class PhoneNumber(models.Model):
             if self.opted_in and not self.welcome_sent:
                 if self.language == "es" and self.arm.name == "control":
                     message = welcome_message_control_es
+                    success = retry_send_message_vonage(message, self, "sending welcome message", max_retries=3, retry_delay=5,include_name=False)
                 elif self.language == "es" and self.arm.name != "control":
                     message = welcome_message_es
+                    success = retry_send_message_vonage(message, self, "sending welcome message", max_retries=3, retry_delay=5)
                 elif self.arm.name != "control":
                     message = welcome_message
+                    success = retry_send_message_vonage(message, self, "sending welcome message", max_retries=3, retry_delay=5)
                 else:
                     message = welcome_message_control
-                success = retry_send_message_vonage(message, self, "sending welcome message", max_retries=3, retry_delay=5)
+                    success = retry_send_message_vonage(message, self, "sending welcome message", max_retries=3, retry_delay=5,include_name=False)
+                
                 TextMessage.objects.create(phone_number=self, message=message, route="sending welcome message")
                 time.sleep(5)
                 if self.pre_survey:

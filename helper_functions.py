@@ -26,17 +26,17 @@ from .send_message_vonage import *
 logger = logging.getLogger(__name__)
 
 # Load the dictionary from the pickle file
-with open('base/intent_dict.pkl', 'rb') as file:
-    intent_dict = pickle.load(file)
+with open('base/intent_dict.json', 'rb') as file:
+    intent_dict = json.load(file)
 
-with codecs.open('base/intent_dict_es.pkl', 'rb') as file:
-    intent_dict_es = pickle.load(file, encoding='latin1')
+with codecs.open('base/intent_dict_es.json', 'rb') as file:
+    intent_dict_es = json.load(file, encoding='latin1')
 
-with open('base/azure_intent.pkl', 'rb') as file:
-    azure_intent = pickle.load(file)
+with open('base/azure_intent.json', 'rb') as file:
+    azure_intent = json.load(file)
 
-with open('base/dialog_eng_es.pickle', 'rb') as file:
-    dialog_dict = pickle.load(file)
+with open('base/dialog_eng_es.json', 'rb') as file:
+    dialog_dict = json.load(file)
 
 df = pd.read_excel('base/responses.xlsx',engine='openpyxl')
 
@@ -500,6 +500,7 @@ def get_prediction_render(text, language, phone_number):
 def get_prediction_azure(text, language, phone_number):
     logger.info(f"get_prediction called for {text}")
     url = "https://clinic-chat-test.cognitiveservices.azure.com/language/:analyze-conversations?api-version=2022-10-01-preview"
+    
 
     headers = {
         "Ocp-Apim-Subscription-Key": "f0786e002e9d4917b4af22bdf22e6dc3",
@@ -522,9 +523,9 @@ def get_prediction_azure(text, language, phone_number):
         }
     },
     "parameters": {
-        "projectName": "Chat4HeartHealth",
+        "projectName": "Chat4Heart-Josh-test",
         "verbose": True,
-        "deploymentName": "Chat4HeartHealth",
+        "deploymentName": "c4h",
         "stringIndexType": "TextElement_V8"
     }
 }
