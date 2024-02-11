@@ -24,10 +24,10 @@ class ScheduledMessagesTestControl(TestCase):
         phone_number_instance.save()
         print("created phone number")
 
-        call_command('loaddata', 'base/fixtures/topics_fixture.json')
-        call_command('loaddata', 'base/fixtures/scheduledmessage_fixture.json')
-        call_command('loaddata', 'base/fixtures/scheduledmessagecontrol_fixture.json')
-        call_command('loaddata', 'base/fixtures/topicgoals_fixture.json')
+        call_command('loaddata', 'fixtures/topics_fixture.json')
+        call_command('loaddata', 'fixtures/scheduledmessage_fixture.json')
+        call_command('loaddata', 'fixtures/scheduledmessagecontrol_fixture.json')
+        call_command('loaddata', 'fixtures/topicgoals_fixture.json')
     
     def dummy_test(self):
         self.assertEqual(1, 1)
