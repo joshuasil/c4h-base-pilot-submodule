@@ -195,10 +195,12 @@ def send_scheduled_message():
                     numbered_dialog = '\n'.join([f"{i}. {dialog}" for i, dialog in convert_str_to_dict(picklist_json).items()])
                     logger.info(f"numbered_dialog: {numbered_dialog}")
                 message = message + '\n' + numbered_dialog
+                include_name = True
             else:
                 message = message
+                include_name = False
             if not getattr(message_tracker, message_tracker_col):
-                retry_send_message_vonage(message,phone_number, route='outgoing_scheduled_info',include_name=False)
+                retry_send_message_vonage(message,phone_number, route='outgoing_scheduled_info',include_name=include_name)
                 TextMessage.objects.create(phone_number=phone_number, message=message, route='outgoing_scheduled_info')
                 setattr(message_tracker, message_tracker_col, True)
             message_tracker.save()
