@@ -198,7 +198,7 @@ def send_scheduled_message():
             else:
                 message = message
             if not getattr(message_tracker, message_tracker_col):
-                retry_send_message_vonage(message,phone_number, route='outgoing_scheduled_info')
+                retry_send_message_vonage(message,phone_number, route='outgoing_scheduled_info',include_name=False)
                 TextMessage.objects.create(phone_number=phone_number, message=message, route='outgoing_scheduled_info')
                 setattr(message_tracker, message_tracker_col, True)
             message_tracker.save()
