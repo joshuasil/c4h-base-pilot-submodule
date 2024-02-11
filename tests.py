@@ -12,15 +12,15 @@ class ScheduledMessagesTestControl(TestCase):
                 
         if created:
             print("created arm")
-        # phone_number_instance = PhoneNumber(phone_number='17205480513', arm=default_arm,name="Adam",opted_in=True,
-        #                                     pre_survey='www.google.com',post_survey='www.google.com')
-        # phone_number_instance.save()
+        phone_number_instance = PhoneNumber(phone_number='17205480513', arm=default_arm,name="Adam",opted_in=True,
+                                            pre_survey='www.google.com',post_survey='www.google.com')
+        phone_number_instance.save()
         phone_number_instance = PhoneNumber(phone_number='17204001070', arm=default_arm,name="Josh",opted_in=True,
                                             pre_survey='www.google.com',post_survey='www.google.com')
         phone_number_instance.save()
-        # phone_number_instance = PhoneNumber(phone_number='13038079800', arm=default_arm,name="Sheana",opted_in=True,
-        #                                     pre_survey='www.google.com',post_survey='www.google.com')
-        # phone_number_instance.save()
+        phone_number_instance = PhoneNumber(phone_number='13038079800', arm=default_arm,name="Sheana",opted_in=True,
+                                            pre_survey='www.google.com',post_survey='www.google.com')
+        phone_number_instance.save()
         print("created phone number")
 
         call_command('loaddata', 'fixtures/topics_fixture.json')
@@ -60,15 +60,15 @@ class ScheduledMessagesAI(TestCase):
                 
         if created:
             print("created arm")
-        # phone_number_instance = PhoneNumber(phone_number='17205480513', arm=default_arm,name="Adam",opted_in=True,
-        #                                     pre_survey='www.google.com',post_survey='www.google.com')
-        # phone_number_instance.save()
+        phone_number_instance = PhoneNumber(phone_number='17205480513', arm=default_arm,name="Adam",opted_in=True,
+                                            pre_survey='www.google.com',post_survey='www.google.com')
+        phone_number_instance.save()
         phone_number_instance = PhoneNumber(phone_number='17204001070', arm=default_arm,name="Josh",opted_in=True,
                                             pre_survey='www.google.com',post_survey='www.google.com')
         phone_number_instance.save()
-        # phone_number_instance = PhoneNumber(phone_number='13038079800', arm=default_arm,name="Sheana",opted_in=True,
-        #                                     pre_survey='www.google.com',post_survey='www.google.com')
-        # phone_number_instance.save()
+        phone_number_instance = PhoneNumber(phone_number='13038079800', arm=default_arm,name="Sheana",opted_in=True,
+                                            pre_survey='www.google.com',post_survey='www.google.com')
+        phone_number_instance.save()
         print("created phone number")
 
         call_command('loaddata', 'fixtures/topics_fixture.json')
