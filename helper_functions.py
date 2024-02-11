@@ -38,7 +38,7 @@ with open('base/azure_intent.json', 'rb') as file:
 with open('base/dialog_eng_es.json', 'rb') as file:
     dialog_dict = json.load(file)
 
-df = pd.read_excel('base/responses.xlsx',engine='openpyxl')
+df = pd.read_excel('responses.xlsx',engine='openpyxl')
 
 
 client = vonage.Client(key=settings.VONAGE_KEY, secret=settings.VONAGE_SECRET, timeout=10)
