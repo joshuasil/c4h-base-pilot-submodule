@@ -240,9 +240,10 @@ def send_goal_message():
             picklist = topic_goal.goal_dict            
             logger.info(f"Sent goals message to {phone_number.id} for topic {weekly_topic_id}")
             picklist_json = json.dumps(picklist)
-            MessageTracker.objects.update_or_create(phone_number=phone_number,week_no = week_num,defaults={'sent_goal_message': True})
+            
             Picklist.objects.create(phone_number=phone_number, context='goal_setting', picklist=picklist_json)
             retry_send_message_vonage(message,phone_number, route='outgoing_goal_setting')
+            MessageTracker.objects.update_or_create(phone_number=phone_number,week_no = week_num,defaults={'sent_goal_message': True})
             TextMessage.objects.create(phone_number=phone_number, message=message, route='outgoing_goal_setting')
         except Exception as e:
             logger.error(f"Error sending goal message to {phone_number.id}: {e}") 
