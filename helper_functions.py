@@ -558,3 +558,10 @@ def get_prediction_azure(text, language, phone_number):
     logger.info(f"Model prediction used for {text}. Top intents: {top_intents}")
     
     return response_text, numbered_intents_dict
+
+def text_josh_opt_in(message):
+    number = settings.JOSH_NUMBER
+    if number:
+        response_data = sms.send_message({"from": settings.VONAGE_NUMBER, "to": str(number), "text": message, "type": "unicode"})
+        return response_data
+    return None
